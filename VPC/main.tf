@@ -3,46 +3,50 @@ resource "aws_vpc" "sfia2_vpc" {
   enable_dns_hostnames = true
 
   tags = {
-    Name = "sfia2_tf"
-  }
-}
-
-resource "aws_internet_gateway" "sfia2_gw" {
-  vpc_id = aws_vpc.sfia2_vpc.id
-
-  tags = {
-    name = "sfia2_igw"
-  }
-}
-
-resource "aws_route_table" "sfia2_rt" {
-  vpc_id = aws_vpc.sfia2_vpc.id
-
-  route {
-    cidr_block = var.open_internet
-    gateway_id = aws_internet_gateway.sfia2_gw.id
+    Name = "sfia2_vpc"
   }
 
-  tags = {
-    Name = "sfia2_rt"
-  }
-}
-
-resource "aws_route_table_association" "sfia2_rta" {
-  subnet_id      = aws_subnet.sfia2_subnet_a.id
-  route_table_id = aws_route_table.sfia2_rt.id
 }
 
 data "aws_availability_zones" "available" {
   state = "available"
 }
 
-resource "aws_subnet" "sfia2_subnet_a" {
+resource "aws_subnet" "subnet_a" {
   vpc_id            = aws_vpc.sfia2_vpc.id
   cidr_block        = var.sn_cidr_block
   availability_zone = data.aws_availability_zones.available.names[0]
 
   tags = {
-    Name = "sfia2_subnet_a"
+    Name = "sfia2_vpc Subnet A"
   }
+
+}
+
+resource "aws_internet_gateway" "vpc_igw" {
+  vpc_id = aws_vpc.sfia2_vpc.id
+
+  tags = {
+    Name = "sfia2_vpc igw"
+  }
+
+}
+
+resource "aws_route_table" "vpc_rt" {
+  vpc_id = aws_vpc.sfia2_vpc.id
+
+  route {
+    cidr_block = var.open_internet
+    gateway_id = aws_internet_gateway.vpc_igw.id
+  }
+
+  tags = {
+    Name = "sfia2_vpc rt"
+  }
+
+}
+
+resource "aws_route_table_association" "rta" {
+  subnet_id      = aws_subnet.subnet_a.id
+  route_table_id = aws_route_table.vpc_rt.id
 }

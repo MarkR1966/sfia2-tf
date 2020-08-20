@@ -1,20 +1,50 @@
+
 provider "aws" {
   region                  = var.region
-  shared_credentials_file = var.shared_key
+  shared_credentials_file = "~/.aws/credentials"
 }
 
-module "vpc" {
+module "sfia2_vpc" {
   source = "./VPC"
 }
 
-module "sg" {
-  source = "./SG"
-  vpc_id = module.vpc.vpc_id
+module "sg_manager_myip" {
+  sg_web_name   = "manager SG For My IP"
+  source        = "./SG"
+  ip_addresses  = ["3.250.72.18/32", "86.2.192.144/32"]
+  ingress_ports = [22, 8080]
+  vpc_id        = module.sfia2_vpc.vpc_id
 }
 
-module "ec2" {
-  source    = "./EC2"
-  subnet_id = module.vpc.subnet_a_id
-  sg_ids    = module.sg.sg1_id
-  sg2_ids   = module.sg.sg2_id
+module "sg_manager_open" {
+  sg_web_name   = "manager SG Open"
+  source        = "./SG"
+  ingress_ports = [80]
+  vpc_id        = module.sfia2_vpc.vpc_id
+}
+
+module "sg_worker_myip" {
+  sg_web_name  = "Worker SG For My IP"
+  source       = "./SG"
+  ip_addresses = ["3.250.72.18/32", "86.2.192.144/32"]
+  vpc_id       = module.sfia2_vpc.vpc_id
+}
+
+data "template_file" "init" {
+  template = "${file("${path.module}/scripts/setup.sh")}"
+}
+
+module "manager_node" {
+  source                 = "./EC2"
+  name                   = "manager"
+  subnet_id              = module.sfia2_vpc.subnet_a_id
+  vpc_security_group_ids = [module.sg_manager_myip.sg_id, module.sg_manager_open.sg_id]
+  user_data              = data.template_file.init.rendered
+}
+
+module "worker_node" {
+  source                 = "./EC2"
+  name                   = "Worker"
+  subnet_id              = module.sfia2_vpc.subnet_a_id
+  vpc_security_group_ids = [module.sg_worker_myip.sg_id]
 }

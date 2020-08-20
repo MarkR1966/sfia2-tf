@@ -1,26 +1,35 @@
 variable "instance" {
-  description = "This variable states the instance type for EC2"
+  description = "This variable state the instance type for your EC2"
   default     = "t2.micro"
 }
 
-variable "key_name" {
-  description = "This variable states the key pair"
-  default     = "mark"
+variable "ami_id" {
+  default = "ami-07ee42ba0209b6d77"
 }
 
-variable "ami_id" {
-  description = "This variable states the AMI Image ID"
-  default     = "ami-07ee42ba0209b6d77"
+variable "key_name" {
+  default = "mark"
 }
 
 variable "subnet_id" {
-  description = "subnet ID for EC2"
+  description = "Subnet ID for EC2"
 }
 
-variable "sg_ids" {
-  description = "default security groups required"
+variable "name" {
+  description = "Name of EC2 Instance"
+  default     = "EC2200820"
 }
 
-variable "sg2_ids" {
-  description = "default security groups required"
+variable "enable_public_ip" {
+  description = "Enable if EC2 instace should have public ip address"
+  default     = true
+}
+
+variable "vpc_security_group_ids" {
+  description = "VPC Security Group IDs"
+}
+
+variable "user_data" {
+  description = "script to run when creating instance"
+  default     = "data.template_file.init.rendered"
 }

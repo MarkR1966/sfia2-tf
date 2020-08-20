@@ -1,29 +1,18 @@
 variable "sg_web_name" {
-  default = "DefaultSGweb"
+  default = "DefaultSGWeb"
 }
 
 variable "sg_web_description" {
   default = "Allow SSH"
 }
 
-variable "open_internet" {
-  default = "0.0.0.0/0"
-}
-
-variable "my_ip" {
-  description = "IP address of terraform EC2"
-  default     = "3.250.72.18/32"
+variable "ip_addresses" {
+  default = ["0.0.0.0/0"]
 }
 
 variable "ingress_ports" {
-  description = "List of Ingress Ports"
   type        = list(number)
-  default     = [22, 8080]
-}
-
-variable "ingress_ports2" {
-  description = "List of Ingress Ports"
-  type        = list(number)
+  description = "List of ingress ports"
   default     = [22]
 }
 
@@ -33,5 +22,5 @@ variable "outbound_port" {
 }
 
 variable "vpc_id" {
-  description = "Default VPC ID"
+  description = "VPC ID for SG"
 }
