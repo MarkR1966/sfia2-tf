@@ -20,3 +20,7 @@ variable "subnet_id" {
 variable "sg_ids" {
   description = "default security groups required"
 }
+
+variable "sg2_ids" {
+  description = "default security groups required"
+}

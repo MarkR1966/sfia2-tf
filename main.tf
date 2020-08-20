@@ -15,5 +15,6 @@ module "sg" {
 module "ec2" {
   source    = "./EC2"
   subnet_id = module.vpc.subnet_a_id
-  sg_ids = module.sg.sg_id
+  sg_ids    = module.sg.sg1_id
+  sg2_ids   = module.sg.sg2_id
 }

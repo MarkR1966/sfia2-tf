@@ -1,7 +1,7 @@
 output "subnet_a_id" {
-  value = aws_subnet.subnet_a.id
+  value = aws_subnet.sfia2_subnet_a.id
 }
 
 output "vpc_id" {
-  value = aws_vpc.vpc.id
+  value = aws_vpc.sfia2_vpc.id
 }
